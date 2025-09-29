@@ -93,7 +93,6 @@ void run_analysis()
                                             // if (file_pointer != ...
   if (file_pointer != NULL) {
       fclose(file_pointer);
-      file_pointer = NULL;
   }
                                             /* Performs the Fourier transformation by passing the data readings, the complex result
                                             array, and two other parameters to the fft function. Since arrays are pass by reference
@@ -126,15 +125,12 @@ void run_analysis()
                                             If it is, store both the frequency and the amplitude.
                                             */
                                            // for (i = 0...
-  for (i = 0; i < (NUMBER_OF_READINGS/2); i++) {
+  for (i = 0; i < NUMBER_OF_READINGS / 2; i++) {
       if (omega[i] >= NOISE_FILTER) {
-        if (frequency <= readings[i]) {
-            frequency = readings[i];
-            if (frequency == readings[i]) {
-                amplitude++;
-            }
+          if (readings[i] >= amplitude) {
+              frequency = omega[i];
+              amplitude = readings[i];
           }
-
       }
   }
                                             /* You can use this for debugging, or (even better) you can set a breakpoint
@@ -155,7 +151,6 @@ void run_analysis()
                                             // if (file_pointer ...
   if (file_pointer != NULL) {
       fclose(file_pointer);
-      file_pointer = NULL;
   }
                                             /* And that's it */
   printf("Analysis complete, result.txt created\n");
@@ -184,7 +179,7 @@ void process_file(double array_to_populate[], FILE* pointer_to_data_file)
 
   /* Copies the file, line by line, to line buffer using fgets in a while loop */
   // while( fgets (... ) ) {
-  while (fgets(line_buffer, MAX_VALUES_PER_LINE, pointer_to_data_file) != NULL) {
+  while (fgets(line_buffer, LINESIZE, pointer_to_data_file) != NULL) {
       
 
       /* Tries to extract MAX_VALUES_PER_LINE ints from the line buffer and assign
